@@ -5,6 +5,7 @@ pipeline {
         stage('Snyk Open Source Scan - SCA') {
             steps {
                 sh 'ls'
+                sh 'cd todolist'
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     snykSecurity additionalArguments: '', 
                                  failOnIssues: true, 
