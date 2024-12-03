@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Snyk Open Source Scan - SCA') {
             steps {
+                sh 'ls'
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     snykSecurity additionalArguments: '', 
                                  failOnIssues: true, 
