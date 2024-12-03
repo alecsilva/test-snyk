@@ -5,12 +5,12 @@ pipeline {
         stage('Snyk Open Source Scan - SCA') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    snykSecurity additionalArguments: '--debug', 
+                    snykSecurity additionalArguments: '', 
                                  failOnIssues: false, 
-                                 failOnError: false, 
+                                 failOnError: true, 
                                  monitorProjectOnBuild: true, 
                                  projectName: '${JOB_NAME}', 
-                                 severity: 'high', 
+                                 severity: 'critical', 
                                  snykInstallation: 'snyk@latest', 
                                  snykTokenId: 'snyk-api-token'
                 }
@@ -19,11 +19,12 @@ pipeline {
 
         stage('Snyk Code Scan - SAST') {
             steps {
-                snykSecurity additionalArguments: '--code --debug', 
+                snykSecurity additionalArguments: '--code', 
                              failOnIssues: false, 
-                             failOnError: false, 
+                             failOnError: true, 
                              monitorProjectOnBuild: true, 
                              projectName: '${JOB_NAME}', 
+                             severity: 'critical', 
                              snykInstallation: 'snyk@latest', 
                              snykTokenId: 'snyk-api-token'
             }
