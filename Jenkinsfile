@@ -21,6 +21,8 @@ pipeline {
 
         stage('Snyk Code Scan - SAST') {
             steps {
+                sh 'cd todolist'
+                sh 'ls'
                 snykSecurity additionalArguments: '--code', 
                              failOnIssues: false, 
                              failOnError: true, 
