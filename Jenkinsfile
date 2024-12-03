@@ -1,34 +1,27 @@
+
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Snyk Open Source Scan - SCA') {
-            steps {
-                sh 'ls'
-                sh 'cd todolist'
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    snykSecurity additionalArguments: '', 
-                                 failOnIssues: true, 
-                                 failOnError: true, 
-                                 monitorProjectOnBuild: true, 
-                                 severity: 'critical', 
-                                 snykInstallation: 'snyk@latest', 
-                                 snykTokenId: 'snyk-api-token'
-                }
-            }
-        }
-
-        stage('Snyk Code Scan - SAST') {
-            steps {
-                sh 'cd todolist'
-                sh 'ls'
-                snykSecurity additionalArguments: '--code', 
-                             failOnIssues: false, 
-                             failOnError: true, 
-                             monitorProjectOnBuild: true, 
-                             snykInstallation: 'snyk@latest', 
-                             snykTokenId: 'snyk-api-token'
-            }
-        }
+  stages {
+    stage('Build') {
+      steps {
+        echo 'Building...'
+      }
     }
+    stage('Test') {
+      steps {
+        echo 'Testing...'
+        snykSecurity(
+          snykInstallation: 'snyk@latest',
+          snykTokenId: 'snyk-api-token',
+          // place other parameters here
+        )
+      }
+    }
+    stage('Deploy') {
+      steps {
+        echo 'Deploying...'
+      }
+    }
+  }
 }
