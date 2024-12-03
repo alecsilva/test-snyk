@@ -11,7 +11,6 @@ pipeline {
                                  failOnIssues: true, 
                                  failOnError: true, 
                                  monitorProjectOnBuild: true, 
-                                 projectName: '${JOB_NAME}', 
                                  severity: 'critical', 
                                  snykInstallation: 'snyk@latest', 
                                  snykTokenId: 'snyk-api-token'
@@ -27,7 +26,6 @@ pipeline {
                              failOnIssues: false, 
                              failOnError: true, 
                              monitorProjectOnBuild: true, 
-                             projectName: '${JOB_NAME}', 
                              snykInstallation: 'snyk@latest', 
                              snykTokenId: 'snyk-api-token'
             }
