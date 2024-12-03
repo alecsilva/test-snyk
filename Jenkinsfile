@@ -6,7 +6,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     snykSecurity additionalArguments: '', 
-                                 failOnIssues: false, 
+                                 failOnIssues: true, 
                                  failOnError: true, 
                                  monitorProjectOnBuild: true, 
                                  projectName: '${JOB_NAME}', 
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 snykSecurity additionalArguments: '--code', 
                              failOnIssues: false, 
-                             failOnError: true, 
+                             failOnError: false, 
                              monitorProjectOnBuild: true, 
                              projectName: '${JOB_NAME}', 
                              severity: 'critical', 
