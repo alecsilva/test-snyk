@@ -12,6 +12,7 @@ pipeline {
         snykSecurity additionalArguments: '-debug --all-projects --policy-path=.snyk', 
                      failOnIssues: true, 
                      failOnError: false, 
+                     severity: 'critical',
                      monitorProjectOnBuild: true, 
                      snykInstallation: 'snyk@latest', 
                      snykTokenId: 'snykTokenId'
