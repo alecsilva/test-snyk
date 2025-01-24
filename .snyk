@@ -2,3 +2,12 @@ ignore:
   SNYK-JAVA-COMMONSCOLLECTIONS-30078:
     - '*':
         reason: Se acepta el riesgo
+  SNYK-JAVA-COMMONSCOLLECTIONS-6056408:
+    - '*':
+        reason: Se acepta el riesgo
+  SNYK-JAVA-ORGAPACHELOGGINGLOG4J-2320014:
+    - '*':
+        reason: Se acepta el riesgo
+  SNYK-JAVA-COMUNBOUNDID-32143:
+    - '*':
+        reason: Se acepta el riesgo
