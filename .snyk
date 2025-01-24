@@ -17,3 +17,6 @@ ignore:
   SNYK-JAVA-C3P0-461017:
     - '*':
         reason: Se acepta el riesgo
+  SNYK-JAVA-IOUNDERTOW-8383402:
+    - '*':
+        reason: Se acepta el riesgo
