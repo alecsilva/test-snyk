@@ -11,9 +11,8 @@ pipeline {
       steps {
         snykSecurity additionalArguments: '-debug', 
                      failOnIssues: true, 
-                     failOnError: false, 
+                     failOnError: true, 
                      monitorProjectOnBuild: true, 
-                     severity: 'critical', 
                      snykInstallation: 'snyk@latest', 
                      snykTokenId: 'snykTokenId'
       }
