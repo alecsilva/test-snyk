@@ -11,3 +11,9 @@ ignore:
   SNYK-JAVA-COMUNBOUNDID-32143:
     - '*':
         reason: Se acepta el riesgo
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-2436751:
+    - '*':
+        reason: Se acepta el riesgo
+  SNYK-JAVA-C3P0-461017:
+    - '*':
+        reason: Se acepta el riesgo
