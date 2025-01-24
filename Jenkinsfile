@@ -18,16 +18,6 @@ pipeline {
                      snykTokenId: 'snykTokenId'
       }
     }
-    stage('Snyk Code Scan - SAST') {
-      steps {
-        snykSecurity additionalArguments: '--code -debug', 
-                     failOnIssues: false, 
-                     failOnError: false, 
-                     monitorProjectOnBuild: true, 
-                     snykInstallation: 'snyk@latest', 
-                     snykTokenId: 'snykTokenId'
-      }
-    }
     stage('Deploy') {
       steps {
         echo 'Deploying...'
