@@ -1,0 +1,4 @@
+ignore:
+  SNYK-JAVA-COMMONSCOLLECTIONS-30078:
+    - '*':
+        reason: Se acepta el riesgo
