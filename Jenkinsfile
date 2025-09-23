@@ -15,7 +15,7 @@ pipeline {
                      severity: 'critical',
                      monitorProjectOnBuild: true, 
                      snykInstallation: 'snyk@latest', 
-                     snykTokenId: 'snykTokenId'
+                     snykTokenId: 'snyk-api-token'
       }
     }
     stage('Deploy') {
