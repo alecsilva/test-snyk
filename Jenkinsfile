@@ -9,7 +9,7 @@ pipeline {
     }
     stage('Snyk Open Source Scan - SCA') {
       steps {
-        snykSecurity additionalArguments: '-debug --all-projects --policy-path=.snyk', 
+        snykSecurity additionalArguments: '--debug --all-projects --policy-path=.snyk', 
                      failOnIssues: true, 
                      failOnError: false, 
                      severity: 'critical',
