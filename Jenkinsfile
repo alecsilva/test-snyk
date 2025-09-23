@@ -17,7 +17,8 @@ pipeline {
           severity: 'critical',
           monitorProjectOnBuild: true,
           snykInstallation: 'mi-snyk-arm64',             // Tool Installation manual
-          snykTokenId: 'snyk-api-token'     // ID de tu credencial "Snyk API token"
+          snykTokenId: 'snyk-api-token',     // ID de tu credencial "Snyk API token"
+          organization: 'pichincha-test'
         )
       }
     }
