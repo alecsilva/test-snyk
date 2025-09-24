@@ -20,3 +20,6 @@ ignore:
   SNYK-JAVA-IOUNDERTOW-8383402:
     - '*':
         reason: Se acepta el riesgo
+  snyk:lic:maven:com.github.albfernandez:juniversalchardet:(GPL-3.0_OR_LGPL-3.0_OR_MPL-1.1):
+    - '*':
+        reason: Se acepta el riesgo
