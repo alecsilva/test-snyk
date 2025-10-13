@@ -14,7 +14,7 @@ permissions:
 env:
   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   SNYK_ORG: ekislab
-  CODE_PATH: ""
+  CODE_PATH: todolist
 
 jobs:
   snyk-code:
