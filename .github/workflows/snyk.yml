@@ -9,12 +9,10 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # para subir SARIF a Code Scanning
   actions: read
 
 env:
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # <-- añade este secret en el repo
-
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 jobs:
   deps_scan:
     name: Scan dependencias (Node.js)
@@ -36,16 +34,13 @@ jobs:
       - name: Autenticación Snyk
         run: snyk auth "${SNYK_TOKEN}"
 
-      - name: Instalar deps (si aplica)
+      - name: Instalar deps
         run: |
           if [ -f package.json ]; then npm ci --ignore-scripts; fi
 
-      # Nota: Snyk sale con código != 0 si encuentra vulnerabilidades.
-      # Usamos `|| true` para garantizar que se genere el HTML y continúe.
       - name: Snyk test (JSON y SARIF)
         run: |
           snyk test --all-projects --json > snyk.json || true
-          snyk test --all-projects --sarif > snyk.sarif || true
 
       - name: Convertir a HTML
         run: snyk-to-html -i snyk.json -o snyk-report.html
@@ -57,11 +52,6 @@ jobs:
           path: snyk-report.html
           if-no-files-found: warn
           retention-days: 7
-
-      - name: Subir SARIF a Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk.sarif
 
   iac_scan:
     name: Scan IaC (Terraform/K8s)
@@ -78,10 +68,9 @@ jobs:
       - name: Autenticación Snyk
         run: snyk auth "${SNYK_TOKEN}"
 
-      - name: Snyk IaC (JSON y SARIF)
+      - name: Snyk IaC
         run: |
           snyk iac test --report --json > snyk-iac.json || true
-          snyk iac test --sarif > snyk-iac.sarif || true
 
       - name: Convertir a HTML
         run: snyk-to-html -i snyk-iac.json -o snyk-iac-report.html
@@ -92,8 +81,3 @@ jobs:
           name: snyk-report-iac
           path: snyk-iac-report.html
           retention-days: 7
-
-      - name: Subir SARIF a Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk-iac.sarif
