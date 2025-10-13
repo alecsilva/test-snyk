@@ -1,0 +1,142 @@
+name: Snyk Full Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  SNYK_ORG: ${{ vars.SNYK_ORG }}
+
+jobs:
+  open_source:
+    name: Snyk Open Source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Snyk y snyk-to-html
+        run: npm i -g snyk snyk-to-html
+
+      - name: Autenticación Snyk
+        run: snyk auth "${SNYK_TOKEN}"
+
+      - name: Instalar deps
+        run: |
+          if [ -f package.json ]; then npm ci --ignore-scripts; fi
+
+      - name: Snyk testa  JSON
+        run: |
+          snyk test --all-projects --org="${SNYK_ORG}" --json > snyk-os.json || true
+
+      - name: Convertir a HTML
+        run: snyk-to-html -i snyk-os.json -o snyk-open-source.html
+
+      - name: Subir artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-open-source
+          path: snyk-open-source.html
+          retention-days: 7
+
+  code:
+    name: Snyk Code (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Snyk y snyk-to-html
+        run: npm i -g snyk snyk-to-html
+
+      - name: Autenticación Snyk
+        run: snyk auth "${SNYK_TOKEN}"
+
+      - name: Snyk Code test a JSON
+        run: |
+          snyk code test --org="${SNYK_ORG}" --json > snyk-code.json || true
+
+      - name: Convertir a HTML
+        run: snyk-to-html -i snyk-code.json -o snyk-code.html
+
+      - name: Subir artifact (HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-code
+          path: snyk-code.html
+          retention-days: 7
+
+  iac:
+    name: Snyk IaC
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Snyk y snyk-to-html
+        run: npm i -g snyk snyk-to-html
+
+      - name: Autenticación Snyk
+        run: snyk auth "${SNYK_TOKEN}"
+
+      - name: Snyk IaC test a JSON
+        run: |
+          snyk iac test --org="${SNYK_ORG}" --report --json > snyk-iac.json || true
+
+      - name: Convertir a HTML
+        run: snyk-to-html -i snyk-iac.json -o snyk-iac.html
+
+      - name: Subir artifact (HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-iac
+          path: snyk-iac.html
+          retention-days: 7
+
+  container:
+    name: Snyk Container
+    runs-on: ubuntu-latest
+    # Solo se ejecuta si hay Dockerfile en el repo
+    if: ${{ hashFiles('Dockerfile') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          IMAGE="app:${{ github.sha }}"
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+          docker build -t "$IMAGE" .
+
+      - name: Instalar Snyk y snyk-to-html
+        run: npm i -g snyk snyk-to-html
+
+      - name: Autenticación Snyk
+        run: snyk auth "${SNYK_TOKEN}"
+
+      - name: Snyk Container test a JSON
+        run: |
+          snyk container test "$IMAGE" --org="${SNYK_ORG}" --json > snyk-container.json || true
+
+      - name: Convertir a HTML
+        run: snyk-to-html -i snyk-container.json -o snyk-container.html
+
+      - name: Subir artifact (HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-container
+          path: snyk-container.html
+          retention-days: 7
