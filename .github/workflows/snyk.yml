@@ -40,7 +40,7 @@ jobs:
 
       - name: Snyk test (JSON y SARIF)
         run: |
-          snyk test --all-projects --json > snyk.json || true
+          snyk test --all-projects --json > snyk.json
 
       - name: Convertir a HTML
         run: snyk-to-html -i snyk.json -o snyk-report.html
