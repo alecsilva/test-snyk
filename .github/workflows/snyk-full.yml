@@ -13,7 +13,7 @@ permissions:
 
 env:
   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  SNYK_ORG: ${{ vars.SNYK_ORG }}
+  SNYK_ORG: ekislab
 
 jobs:
   open_source:
