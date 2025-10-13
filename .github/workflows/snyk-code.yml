@@ -1,0 +1,55 @@
+name: Snyk Code (SAST)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  SNYK_ORG: ekislab
+  CODE_PATH: ""
+
+jobs:
+  snyk-code:
+    name: Snyk Code (SAST)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Snyk y snyk-to-html
+        run: npm i -g snyk snyk-to-html
+
+      - name: Autenticación Snyk
+        run: snyk auth "${SNYK_TOKEN}"
+
+      # Forzamos salida JSON aunque no haya findings y soportamos subcarpeta
+      - name: Snyk Code test -> JSON
+        run: |
+          WORKDIR="."
+          if [ -n "${CODE_PATH}" ]; then WORKDIR="${CODE_PATH}"; fi
+          pushd "$WORKDIR" >/dev/null
+          snyk code test \
+            --org="${SNYK_ORG}" \
+            --json-file-output=../snyk-code.json || true
+          popd >/dev/null
+          # Asegurar archivo JSON válido si quedó vacío
+          if [ ! -s snyk-code.json ]; then echo '{"runs":[],"issues":[]}' > snyk-code.json; fi
+
+      - name: Convertir a HTML
+        run: snyk-to-html -i snyk-code.json -o snyk-code-report.html || true
+
+      - name: Subir artifact (HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-code
+          path: snyk-code-report.html
+          retention-days: 7
