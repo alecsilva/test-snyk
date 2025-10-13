@@ -106,37 +106,3 @@ jobs:
           path: snyk-iac.html
           retention-days: 7
 
-  container:
-    name: Snyk Container
-    runs-on: ubuntu-latest
-    # Solo se ejecuta si hay Dockerfile en el repo
-    if: ${{ hashFiles('Dockerfile') != '' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build image
-        run: |
-          IMAGE="app:${{ github.sha }}"
-          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
-          docker build -t "$IMAGE" .
-
-      - name: Instalar Snyk y snyk-to-html
-        run: npm i -g snyk snyk-to-html
-
-      - name: Autenticación Snyk
-        run: snyk auth "${SNYK_TOKEN}"
-
-      - name: Snyk Container test a JSON
-        run: |
-          snyk container test "$IMAGE" --org="${SNYK_ORG}" --json > snyk-container.json || true
-
-      - name: Convertir a HTML
-        run: snyk-to-html -i snyk-container.json -o snyk-container.html
-
-      - name: Subir artifact (HTML)
-        uses: actions/upload-artifact@v4
-        with:
-          name: snyk-container
-          path: snyk-container.html
-          retention-days: 7
